@@ -1,0 +1,9 @@
+<form method="post">
+<input name="execution_arn">
+<button>Check</button>
+</form>
+
+{% if status %}
+<p>Status: {{status.status}}</p>
+<p>Output: {{status.output}}</p>
+{% endif %}
