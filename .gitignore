@@ -1,2 +1,6 @@
 AI-Naresh-IT/notes/20-class-23-12-2025/data/rating.csv
 AI-Naresh-IT/notes/20-class-23-12-2025/data/rating.csv
+
+.env
+.myVenv/
+__pycache__/
