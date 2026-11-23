@@ -89,6 +89,56 @@ The three terms are nested like circles: AI is the biggest, machine learning is 
 
 - Every deep learning model is machine learning, and every machine learning model is AI. The other way round is not true.
 
+## Definitions
+
+![Definitions of AI, ML, RL and DL, the types of machine learning and the 7 steps of machine learning](../../image/machine-learning/definitions-types-and-steps.png)
+
+- **Artificial intelligence (AI):** a broad discipline with the goal of creating intelligent machines, as opposed to the natural intelligence shown by humans and animals. It has become a catch-all term for the long-term ambition of the field to build machines that emulate and then exceed the full range of human cognition.
+- **Machine learning (ML):** a subset of AI that often uses statistical techniques to give machines the ability to "learn" from data without being explicitly given the instructions for how to do so. This process is known as "training" a "model" using a learning "algorithm" that progressively improves the model performance on a specific task.
+- **Reinforcement learning (RL):** an area of ML concerned with developing software agents that learn goal-oriented behavior by trial and error in an environment that provides rewards or penalties in response to the agent's actions (called a "policy") towards achieving that goal.
+- **Deep learning (DL):** an area of ML that attempts to mimic the activity in layers of neurons in the brain to learn how to recognise complex patterns in data. The "deep" in deep learning refers to the large number of layers of neurons in contemporary ML models that help to learn rich representations of data to achieve better performance gains.
+
+## What are machine learning algorithms?
+
+![What are machine learning algorithms, AI terminology from AI to ChatGPT, a model for thinking about AI, ML, DL and generative AI](../../image/machine-learning/ai-terminology-and-algorithms.png)
+
+Machine learning algorithms are the **engines** of machine learning: they are the algorithms that **turn a data set into a model**.
+
+```mermaid
+flowchart LR
+    DS["Data set"] --> AL["Machine learning algorithm"] --> MO["Model"]
+```
+
+- In the Celsius example above, `LinearRegression` is the **algorithm** and the learned rule `F = 1.8 × C + 32` is the **model**.
+
+## AI terminology: from AI to ChatGPT
+
+Each term is a part of the one before it, like nested circles:
+
+```text
+Artificial Intelligence (AI)
+└─ Machine Learning (ML)
+   └─ Deep Learning (DL)
+      └─ Generative AI (GenAI)
+         └─ Generative Pre-Trained Transformers (GPT)
+            └─ Large Language Models (LLM)
+               └─ GPT-4
+                  └─ ChatGPT
+```
+
+The same idea as a second picture (class slide): AI, machine learning, neural networks, deep learning, generative AI and large language models, from the outside to the inside.
+
+### A model for thinking about AI, ML, DL and generative AI
+
+| Term | Meaning |
+| ---- | ------- |
+| **Artificial intelligence (AI)** | Any technique that allows computers to mimic human intelligence using logic, if-then statements and machine learning |
+| **Machine learning (ML)** | A subset of AI that uses machines to search for patterns in data to build logic models automatically |
+| **Deep learning (DL)** | A subset of ML composed of deeply multi-layered neural networks that perform tasks like speech and image recognition |
+| **Generative AI** | Powered by large models that are pre-trained on vast corpora of data and commonly referred to as foundation models (FMs) |
+
+- See `generative-vs-agentic-ai.md` for generative AI in more detail.
+
 ## Types of machine learning
 
 | Type | Data | What it learns | Example |
@@ -99,6 +149,15 @@ The three terms are nested like circles: AI is the biggest, machine learning is 
 
 The details (regression and classification algorithms, structured and unstructured data) are in `pandas.md`, section "EDA and Machine Learning".
 
+```mermaid
+flowchart LR
+    ML["Machine learning"] --> SL["Supervised learning<br/>predictive model based on both input and output data"]
+    ML --> UL["Unsupervised learning<br/>group and interpret data based only on input data"]
+    SL --> CL["Classification"]
+    SL --> RG["Regression"]
+    UL --> CU["Clustering"]
+```
+
 ## The machine learning workflow
 
 1. **Collect the data** (the examples).
@@ -107,6 +166,18 @@ The details (regression and classification algorithms, structured and unstructur
 4. **Train** the model on the training data (`fit`): the computer learns the program.
 5. **Evaluate** it on the test data: MAE, MSE, RMSE and R² for regression, or accuracy for classification. See `statistics.md`.
 6. **Predict** for new data (`predict`).
+
+### The 7 steps of machine learning (class picture)
+
+| # | Step | What happens |
+| - | ---- | ------------ |
+| 1 | **Gathering data** | Collect the examples |
+| 2 | **Preparing that data** | Clean it and get it ready (EDA, encoding) |
+| 3 | **Choosing a model** | Pick the algorithm that fits the problem |
+| 4 | **Training** | The model learns from the training data (`fit`) |
+| 5 | **Evaluation** | Check the model on the test data |
+| 6 | **Hyperparameter tuning** | Adjust the model settings to improve the result |
+| 7 | **Prediction** | Use the model on new data (`predict`) |
 
 ## Quick reference
 

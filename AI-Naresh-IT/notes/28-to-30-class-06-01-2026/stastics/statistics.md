@@ -1108,7 +1108,26 @@ print(round(t, 2), round(p, 5))      # 15.81  0.00009     p < 0.05: reject H0
 
 ## 4. Advanced statistics
 
-The advanced topics: r2, adjusted r2, ANOVA, type 1 and type 2 errors, MAE, MSE and RMSE.
+The advanced topics: hypothesis testing, MAE, MSE and RMSE, the regression line, ANOVA, SSR, SST, SSE, r2, adjusted r2, the regression table, type 1 and type 2 errors.
+
+### Advanced stats: course outline (as written)
+
+```text
+4- advanced stats -->
+  hypothesis testing - H0, H1 or Ha, accept null hypothe (close mean) reject H0 (far mean)
+  mae, mse, rmse, graphical representation towards ml for regression line, y = mx + c | y^ = mx + c
+  anova, ssr, sst, sse, r2, adsted r2, regression table
+```
+
+| Outline item | Where |
+| ------------ | ----- |
+| Hypothesis testing: `H0`, `H1` or `Ha`; accept `H0` when the mean is close, reject `H0` when it is far | "Null and alternative hypothesis (notation)", "The null hypothesis `H0: μ₀ = $113,000`" |
+| MAE, MSE, RMSE | "Error metrics for a model: MAE, MSE, RMSE", "MAE, MSE and RMSE: class notes and worked example" |
+| Graphical representation of the regression line, `y = mx + c`, `ŷ = mx + c` | "Linear regression model: geometrical representation" |
+| ANOVA | "ANOVA (analysis of variance)" |
+| SSR, SST, SSE | "Sum of squares: SST, SSR and SSE" |
+| r2, adjusted r2 | "R² = SSR / SST", "r2 and adjusted r2" |
+| Regression table | "Regression tables (the summary output)" |
 
 ### Advance stats: class notes (as written)
 
@@ -1622,6 +1641,120 @@ print(df.groupby("IncomeGroup")["BirthRate"].mean().round(2))
 ```
 
 - ANOVA only says that **some** groups are different. It does not say which ones.
+
+#### The idea: split the variability and compare the parts
+
+ANOVA splits the total variability (**SST**) into a part that the model or the groups explain and a part that is left over (**SSE**). The **F value** is the ratio of the two, each divided by its degrees of freedom.
+
+```text
+SST  =  SSR  +  SSE
+total   explained   unexplained (error)
+
+MS  =  SS / df              (the mean square: a sum of squares per degree of freedom)
+
+F   =  MS explained / MS error
+```
+
+- A **big F** means the explained part is large compared with the noise, so we reject `H0`.
+- A **small F** (near 1) means the model or the groups explain no more than the noise, so we fail to reject `H0`.
+- `F` follows the **F distribution**, with two degrees of freedom: `df` of the explained part and `df` of the error. The p-value is called **Significance F** in the regression table.
+- The same ANOVA table appears in two places: in the **regression table** (does the line explain `y`?) and in **one-way ANOVA** (do the group means differ?).
+
+#### ANOVA in the regression table (SSR, SSE, SST)
+
+`H0`: the slope is 0 (the line explains nothing). `H1`: the slope is not 0. For one `x` the table has these rows:
+
+| Source | SS | df | MS = SS / df | F |
+| ------ | -- | -- | ------------ | - |
+| **Regression** (explained) | `SSR` | `1` (the number of `x` variables, `k`) | `SSR / 1` | `MS regression / MS residual` |
+| **Residual** (error) | `SSE` | `n − k − 1` (`n − 2` with one `x`) | `SSE / (n − 2)` | |
+| **Total** | `SST` | `n − 1` | | |
+
+The 7 points of the regression example (`SSR = 4.610`, `SSE = 1.999`, `SST = 6.609`, `n = 7`):
+
+| Source | SS | df | MS | F | Significance F |
+| ------ | -- | -- | -- | - | -------------- |
+| Regression | 4.610 | 1 | 4.610 | **11.53** | 0.0193 |
+| Residual | 1.999 | 5 | 0.400 | | |
+| Total | 6.609 | 6 | | | |
+
+- `F = 4.610 / 0.400 = 11.53`. The p-value is `0.0193 < 0.05`, so we **reject `H0`**: the line explains a real part of `y`.
+- The df add up: `1 + 5 = 6`, like the sums of squares `4.610 + 1.999 = 6.609`.
+- With one `x`, **`F = t²`**: the slope has `t = 3.395`, and `3.395² = 11.53`. Both tests have the same p-value (`0.0193`).
+- `r2 = SSR / SST = 0.698`. `F` tells us whether the fit is significant, `r2` tells us how big the fit is.
+- The same table is block 2 of the regression output (see "Regression tables").
+
+```python
+import numpy as np
+import statsmodels.api as sm
+
+x = np.array([1.2, 1.8, 2.4, 3.0, 3.6, 4.0, 4.4])
+y = np.array([1.8, 3.0, 2.6, 4.2, 3.4, 4.9, 4.0])
+
+model = sm.OLS(y, sm.add_constant(x)).fit()
+
+ssr, sse, sst = model.ess, model.ssr, model.centered_tss       # 4.610  1.999  6.609  (statsmodels names: ess = our SSR, ssr = our SSE)
+df_reg, df_res = model.df_model, model.df_resid                # 1.0  5.0
+ms_reg, ms_res = ssr / df_reg, sse / df_res                    # 4.610  0.400
+
+print(round(ms_reg / ms_res, 2), round(model.fvalue, 2))       # 11.53  11.53   F
+print(round(model.f_pvalue, 4))                                # 0.0193         Significance F
+print(sm.stats.anova_lm(model))                                # the ANOVA table (needs a formula model, see the note below)
+```
+
+> **Names in statsmodels.** `model.ess` is the **explained** sum of squares (our SSR) and `model.ssr` is the **residual** sum of squares (our SSE). This is the naming difference described in "A note on the names". `anova_lm` works on models built with a formula, `smf.ols("y ~ x", data=df).fit()`.
+
+#### One-way ANOVA: between groups and within groups
+
+With groups, the explained part is the variability **between** the group means and the error part is the variability **within** each group.
+
+| Source | SS | df | MS | F |
+| ------ | -- | -- | -- | - |
+| **Between groups** (explained, like SSR) | `SSB = Σ nⱼ (x̄ⱼ − x̄)²` | `k − 1` (`k` groups) | `SSB / (k − 1)` | `MS between / MS within` |
+| **Within groups** (error, like SSE) | `SSW = Σ (x − x̄ⱼ)²` | `N − k` (`N` values in all) | `SSW / (N − k)` | |
+| **Total** | `SST = Σ (x − x̄)²` | `N − 1` | | |
+
+A small example, 3 groups with 3 values each (`N = 9`, `k = 3`):
+
+| Group | Values | Group mean `x̄ⱼ` |
+| ----- | ------ | ---------------- |
+| A | 2, 3, 4 | 3 |
+| B | 5, 6, 7 | 6 |
+| C | 8, 9, 10 | 9 |
+
+The mean of all 9 values is `x̄ = 6`.
+
+| Source | SS | df | MS | F |
+| ------ | -- | -- | -- | - |
+| Between groups | `3 × (3−6)² + 3 × (6−6)² + 3 × (9−6)² =` **54** | `3 − 1 = 2` | `54 / 2 = 27` | `27 / 1 =` **27** |
+| Within groups | `(1 + 0 + 1) × 3 =` **6** | `9 − 3 = 6` | `6 / 6 = 1` | |
+| Total | **60** | `9 − 1 = 8` | | |
+
+- `SSB + SSW = 54 + 6 = 60 = SST`, and the df add up: `2 + 6 = 8`.
+- `F = 27` with `(2, 6)` degrees of freedom gives `p = 0.001 < 0.05`, so we **reject `H0`**: at least one group mean is different. The groups are far apart (3, 6, 9) compared with the spread inside each group.
+- `r2 = SSB / SST = 54 / 60 = 0.90` (in ANOVA this is called **eta squared**): the groups explain 90% of the variability.
+
+```python
+from scipy import stats
+
+A, B, C = [2, 3, 4], [5, 6, 7], [8, 9, 10]
+F, p = stats.f_oneway(A, B, C)
+print(round(F, 1), round(p, 4))       # 27.0  0.001
+```
+
+- The birth rate example above is the same calculation with 4 groups (the income groups): `k − 1 = 3` and `N − k = N − 4`.
+- ANOVA tells us **that** a difference exists. To find **which** groups differ, we run a **post-hoc test** after it (for example Tukey's test).
+
+**Regression ANOVA and group ANOVA side by side**
+
+| | Regression ANOVA | One-way ANOVA |
+| - | ---------------- | ------------- |
+| Question | Does the line explain `y`? | Do the group means differ? |
+| `H0` | The slope is 0 | All the group means are equal |
+| Explained part | **SSR** (regression) | **SSB** (between groups) |
+| Error part | **SSE** (residual) | **SSW** (within groups) |
+| df explained / error | `k` / `n − k − 1` | `k − 1` / `N − k` |
+| `F` | `MS regression / MS residual` | `MS between / MS within` |
 
 ### Type 1 and type 2 errors
 

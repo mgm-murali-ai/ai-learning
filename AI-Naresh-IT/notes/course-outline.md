@@ -55,7 +55,7 @@ The 7 parts of the course, with a status for every topic and the note where it i
 | Hypothesis testing: `H0`, `H1` or `Ha`, accept and reject | Covered | [statistics.md](statistics.md) "Null and alternative hypothesis (notation)", "The null hypothesis `H0: μ₀ = $113,000`" |
 | MAE, MSE, RMSE | Covered | "MAE, MSE and RMSE: class notes and worked example" |
 | Graphical representation of the regression line, `y = mx + c`, `ŷ = mx + c` | Covered | "Linear regression model: geometrical representation" |
-| ANOVA | Covered | "ANOVA (analysis of variance)" |
+| ANOVA | Covered | "ANOVA (analysis of variance)": the idea, the ANOVA table in the regression output (SSR, SSE, SST, df, MS, F), and one-way ANOVA (between and within groups) |
 | SSR, SST, SSE | Covered | "Sum of squares: SST, SSR and SSE" |
 | r2 and adjusted r2 | Covered | "R² = SSR / SST", "r2 and adjusted r2" |
 | Regression table | Covered | "Regression tables (the summary output)" |
