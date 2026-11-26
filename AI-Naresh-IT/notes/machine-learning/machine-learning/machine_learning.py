@@ -16,7 +16,8 @@ plt.bar(languages,usage)
 # Lables and titles
 plt.xlabel('Programming Languages')
 plt.ylabel('Usage Percentage')
-plt.title('Programing langunages popularity')
-
+plt.title('Programming languages popularity')
+    
 # Show plot
 plt.show()
+# This is a simple bar plot showing the popularity of different programming languages
